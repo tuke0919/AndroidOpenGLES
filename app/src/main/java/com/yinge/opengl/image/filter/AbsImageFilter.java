@@ -64,11 +64,13 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
 
     private Bitmap mBitmap;
 
+    // 顶点坐标缓冲数据
     private FloatBuffer bPositionsBuffer;
+    // 顶点的纹理坐标缓冲数据
     private FloatBuffer bCoordsBuffer;
 
-    private String mVertexCode;
-    private String mFragmentCode;
+    private String mVertexResPath;
+    private String mFragmentResPath;
 
     private float[] mViewMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
@@ -80,10 +82,10 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
     private boolean mIsHalf;
     private float mUxy;
 
-    public AbsImageFilter(Context mContext, String vertexCode, String fragmentCode) {
+    public AbsImageFilter(Context mContext, String vertexResPath, String fragmentResPath) {
         this.mContext = mContext;
-        this.mVertexCode = vertexCode;
-        this.mFragmentCode = fragmentCode;
+        this.mVertexResPath = vertexResPath;
+        this.mFragmentResPath = fragmentResPath;
 
         // 顶点坐标缓冲数据
         ByteBuffer buffer = ByteBuffer.allocateDirect(vertexPositions.length * 4);
@@ -108,7 +110,8 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_TEXTURE_2D);
 
         // 创建主程序
-        mProgram = OpenGlUtils.createProgram(mContext.getResources(), mVertexCode, mFragmentCode);
+        mProgram = OpenGlUtils.createProgram(mContext.getResources(), mVertexResPath, mFragmentResPath);
+
         // 获取主程序 里的着色器变量引用
         glPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
         glCoordinateHandle = GLES20.glGetAttribLocation(mProgram, "vCoordinate");
@@ -118,14 +121,15 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
         glUxyHandle = GLES20.glGetUniformLocation(mProgram, "uXY");
 
         // 子类实现
-        onDrawCreatedSet(mProgram);
+        onGetOtherHandle(mProgram);
 
     }
 
     /**
+     * 获取 着色器中其他引用
      * @param mProgram
      */
-    public abstract void onDrawCreatedSet(int mProgram);
+    public abstract void onGetOtherHandle(int mProgram);
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -137,26 +141,28 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
         float bmpRatio= bmpWidth / (float)bmpHeight;
         float viewRatio = width / (float)height;
 
+        mUxy = viewRatio;
+
         if (width < height) {
             // 竖屏
-            if (bmpRatio > viewRatio) {
-                Matrix.orthoM(mProjectionMatrix, 0, - bmpRatio * viewRatio,bmpRatio * viewRatio, -1,1, 3, 5);
-            } else {
-                Matrix.orthoM(mProjectionMatrix, 0, - viewRatio / bmpRatio,viewRatio / bmpRatio, -1,1, 3, 5);
-            }
-
-        } else {
-            // 横屏
             if(bmpRatio > viewRatio){
-                Matrix.orthoM(mProjectionMatrix, 0, -1, 1, -1 / viewRatio * viewRatio, 1 / bmpRatio * viewRatio,3, 5);
+                Matrix.orthoM(mProjectionMatrix, 0, -1, 1, - bmpRatio / viewRatio , bmpRatio / viewRatio,3, 5);
             }else{
                 Matrix.orthoM(mProjectionMatrix, 0, -1, 1, - bmpRatio / viewRatio, bmpRatio / viewRatio,3, 5);
             }
 
+        } else {
+            // 横屏
+
+            if (bmpRatio > viewRatio) {
+                Matrix.orthoM(mProjectionMatrix, 0, - viewRatio  * bmpRatio,viewRatio * bmpRatio, -1,1, 3, 5);
+            } else {
+                Matrix.orthoM(mProjectionMatrix, 0, - viewRatio / bmpRatio,viewRatio / bmpRatio, -1,1, 3, 5);
+            }
         }
         // 设置相机位置
         Matrix.setLookAtM(mViewMatrix, 0, 0,0, 5f,0,0,0, 0, 1, 0);
-        //计算变换矩阵
+        // 计算变换矩阵
         Matrix.multiplyMM(mMVPMatrix,0,mProjectionMatrix,0,mViewMatrix,0);
 
     }
@@ -167,7 +173,7 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
         // 使用主程序
         GLES20.glUseProgram(mProgram);
         // 子类实现
-        onDrawSet();
+        onSetOtherHandle();
 
         // 给引用赋值
         GLES20.glUniform1i(glIsHalfhandle, mIsHalf ? 1 : 0);
@@ -179,27 +185,29 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
         GLES20.glEnableVertexAttribArray(glPositionHandle);
         GLES20.glEnableVertexAttribArray(glCoordinateHandle);
 
-
         GLES20.glUniform1i(glTextureHandle, 0);
-        // 生成纹理 没用？
+
+        // 生成纹理id 没用？
         mTextureId = createTexture();
 
-
         // 给数组指针 赋值
-        GLES20.glVertexAttribPointer(glPositionHandle, 2, GLES20.GL_FLOAT, false, 0, bCoordsBuffer);
+        GLES20.glVertexAttribPointer(glCoordinateHandle, 2, GLES20.GL_FLOAT, false, 0, bCoordsBuffer);
         GLES20.glVertexAttribPointer(glPositionHandle, 2, GLES20.GL_FLOAT, false, 0, bPositionsBuffer);
         // 折线形式绘制三角形
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
 
     }
 
-    public abstract void onDrawSet();
+    /**
+     * 设置 其他类型的 引用值
+     */
+    public abstract void onSetOtherHandle();
 
     public int createTexture() {
         int[] texture = new int[1];
         if (mBitmap != null && !mBitmap.isRecycled()) {
             // 生成纹理，得到纹理id
-            GLES20.glGenTextures(GLES20.GL_TEXTURE_2D,texture, 0);
+            GLES20.glGenTextures(1, texture, 0);
             // 绑定纹理id
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[0]);
             // 设置纹理参数
@@ -217,5 +225,29 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mBitmap, 0);
         }
         return texture[0];
+    }
+
+    public Bitmap getBitmap() {
+        return mBitmap;
+    }
+
+    public void setBitmap(Bitmap mBitmap) {
+        this.mBitmap = mBitmap;
+    }
+
+    public boolean isIsHalf() {
+        return mIsHalf;
+    }
+
+    public void setIsHalf(boolean mIsHalf) {
+        this.mIsHalf = mIsHalf;
+    }
+
+    public float getUxy() {
+        return mUxy;
+    }
+
+    public void setUxy(float mUxy) {
+        this.mUxy = mUxy;
     }
 }

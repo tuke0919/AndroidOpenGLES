@@ -25,6 +25,10 @@
         <activity android:name=".render.ChooseShapeActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity android:name=".image.GLImageViewActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

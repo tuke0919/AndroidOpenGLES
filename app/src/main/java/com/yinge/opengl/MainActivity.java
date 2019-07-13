@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.yinge.opengl.image.GLImageViewActivity;
 import com.yinge.opengl.render.GLShapeViewActivity;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mList.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         data=new ArrayList<>();
         add("绘制形体", GLShapeViewActivity.class);
-//        add("图片处理",SGLViewActivity.class);
+        add("图片处理", GLImageViewActivity.class);
 //        add("图形变换",VaryActivity.class);
 //        add("相机",CameraActivity.class);
 //        add("相机2 动画",Camera2Activity.class);
