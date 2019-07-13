@@ -29,6 +29,10 @@
         <activity android:name=".image.GLImageViewActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity android:name=".transform.TransformActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
