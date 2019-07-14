@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.yinge.opengl.camera.CameraActivity;
 import com.yinge.opengl.image.GLImageViewActivity;
 import com.yinge.opengl.render.GLShapeViewActivity;
 import com.yinge.opengl.transform.TransformActivity;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         add("绘制形体", GLShapeViewActivity.class);
         add("图片处理", GLImageViewActivity.class);
         add("图形变换", TransformActivity.class);
-//        add("相机",CameraActivity.class);
+        add("相机", CameraActivity.class);
 //        add("相机2 动画",Camera2Activity.class);
 //        add("相机3 美颜",Camera3Activity.class);
 //        add("压缩纹理动画",ZipActivity.class);

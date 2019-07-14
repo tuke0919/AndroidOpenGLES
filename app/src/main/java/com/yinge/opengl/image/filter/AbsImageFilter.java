@@ -17,7 +17,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * 功能：
+ * 功能：使用本地图片 作为纹理的 纹理图片gles
  * </p>
  * <p>Copyright corp.netease.com 2018 All right reserved </p>
  *
@@ -187,7 +187,6 @@ public abstract class AbsImageFilter implements GLSurfaceView.Renderer {
 
         GLES20.glUniform1i(glTextureHandle, 0);
 
-        // 生成纹理id 没用？
         mTextureId = createTexture();
 
         // 给数组指针 赋值

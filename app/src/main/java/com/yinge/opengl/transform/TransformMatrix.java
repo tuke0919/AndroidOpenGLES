@@ -86,6 +86,19 @@ public class TransformMatrix {
 
 
     /**
+     * @param m
+     * @param x
+     * @param y
+     * @return
+     */
+    public static float[] flip(float[] m,boolean x,boolean y){
+        if(x||y){
+            Matrix.scaleM(m,0,x ? -1 : 1, y ? -1 : 1,1);
+        }
+        return m;
+    }
+
+    /**
      * 设置摄像机矩阵
      * @param eyeX 摄像机位置x，y，z
      * @param eyeY
