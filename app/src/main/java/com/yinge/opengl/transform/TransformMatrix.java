@@ -86,12 +86,13 @@ public class TransformMatrix {
 
 
     /**
+     * 翻转
      * @param m
-     * @param x
-     * @param y
+     * @param x x方向反转
+     * @param y y方向反转
      * @return
      */
-    public static float[] flip(float[] m,boolean x,boolean y){
+    public static float[] flip(float[] m,boolean x, boolean y){
         if(x||y){
             Matrix.scaleM(m,0,x ? -1 : 1, y ? -1 : 1,1);
         }

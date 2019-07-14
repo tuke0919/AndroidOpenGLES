@@ -29,8 +29,11 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PermissionUtils.askPermission(this,new String[]{Manifest.permission.CAMERA, Manifest
-            .permission.WRITE_EXTERNAL_STORAGE},10,initViewRunnable);
+        PermissionUtils.askPermission(this,new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                10,
+                initViewRunnable);
     }
 
     private Runnable initViewRunnable = new Runnable() {

@@ -207,7 +207,7 @@ public abstract class AbsOesImageFilter implements GLSurfaceView.Renderer {
     }
 
     public void setMatrix(float[] matrix){
-        this.mMVPMatrix=matrix;
+        this.mMVPMatrix = matrix;
     }
 
     public float[] getMatrix(){
