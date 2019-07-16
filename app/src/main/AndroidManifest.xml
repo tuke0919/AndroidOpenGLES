@@ -48,6 +48,10 @@
         <activity android:name=".fbo.FboActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity android:name=".egl.EGLRenderActivity"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

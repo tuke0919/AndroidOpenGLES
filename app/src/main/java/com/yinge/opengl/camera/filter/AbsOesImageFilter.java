@@ -243,7 +243,7 @@ public abstract class AbsOesImageFilter implements GLSurfaceView.Renderer {
      * @param mBitmap
      * @return
      */
-    public int createTexture(Bitmap mBitmap) {
+    public int createBitmapTexture(Bitmap mBitmap) {
         int[] texture = new int[1];
         if (mBitmap != null && !mBitmap.isRecycled()) {
             // 生成纹理，得到纹理id
