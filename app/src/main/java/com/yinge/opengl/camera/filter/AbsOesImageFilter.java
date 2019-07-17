@@ -227,7 +227,7 @@ public abstract class AbsOesImageFilter implements GLSurfaceView.Renderer {
     }
 
     public final void setTextureId(int textureId){
-        this.mTextureId=textureId;
+        this.mTextureId = textureId;
     }
 
     /**

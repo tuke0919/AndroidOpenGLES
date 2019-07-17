@@ -123,7 +123,7 @@ public class CameraDrawer implements GLSurfaceView.Renderer {
     private void calculateMVPMatrix(){
         ScaleTypeMatrix.getMVPMatrix(mMatrix, this.mDataWidth, this.mDataHeight, this.mViewWidth, this.mViewHeight );
 
-        if(mCameraId==1){
+        if(mCameraId == 1){
             TransformMatrix.flip(mMatrix,true,false);
             Matrix.rotateM(mMatrix,0, 90,0, 0, 1);
         }else{

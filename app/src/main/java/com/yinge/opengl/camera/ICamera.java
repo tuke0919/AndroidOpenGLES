@@ -16,6 +16,7 @@ import android.graphics.SurfaceTexture;
  */
 public interface ICamera {
 
+
     /**
      * 打开相机
      * @param cameraId

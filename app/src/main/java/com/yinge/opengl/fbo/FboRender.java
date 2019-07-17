@@ -19,7 +19,10 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * 功能： 概念地址：https://www.2cto.com/kf/201611/567103.html
+ * 功能： 概念地址：
+ * https://www.2cto.com/kf/201611/567103.html
+ * https://www.jianshu.com/p/78a64b8fb315
+ *
  * </p>
  * <p>Copyright corp.netease.com 2018 All right reserved </p>
  *

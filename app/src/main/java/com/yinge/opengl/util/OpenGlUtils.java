@@ -4,7 +4,10 @@ import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * 功能：
@@ -21,6 +24,9 @@ public class OpenGlUtils {
 
     private static final String TAG = "ShaderUtils";
 
+    public static final int NO_TEXTURE = -1;
+    public static final int NOT_INIT = -1;
+    public static final int ON_DRAWN = 1;
 
     /**
      * 根据着色器代码 文件路径 创建主程序
@@ -128,6 +134,32 @@ public class OpenGlUtils {
         return result.toString().replaceAll("\\r\\n","");
 
     }
+
+
+    /**
+     * 从资源文件 读 shader 源码
+     * @param resources
+     * @param resourceId
+     * @return
+     */
+    public static String readShaderFromRawResource(Resources resources, final int resourceId){
+        final InputStream inputStream =resources.openRawResource(resourceId);
+        final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        String nextLine;
+        final StringBuilder body = new StringBuilder();
+        try{
+            while ((nextLine = bufferedReader.readLine()) != null){
+                body.append(nextLine);
+                body.append('\n');
+            }
+        }
+        catch (IOException e){
+            return null;
+        }
+        return body.toString();
+    }
+
 
 
 }
