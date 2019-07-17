@@ -18,7 +18,7 @@ public class OpenGlCameraSdk {
     private Context mContext;
     private static OpenGlCameraSdk mOpenGlCameraSdk;
 
-    private int mBeautyLevel;
+    private int mBeautyLevel = 5;
 
     public static OpenGlCameraSdk getInstance() {
         if (mOpenGlCameraSdk == null) {

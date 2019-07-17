@@ -133,7 +133,7 @@ public class GPUImageFilter {
     }
 
     /**
-     * 第二步：输入尺寸改变
+     * 第二步：输入尺寸改变，图像的尺寸等
      * @param width
      * @param height
      */
@@ -434,6 +434,7 @@ public class GPUImageFilter {
     }
 
     /**
+     * 设置显示宽高，比如surface宽高
      * @param width
      * @param height
      */

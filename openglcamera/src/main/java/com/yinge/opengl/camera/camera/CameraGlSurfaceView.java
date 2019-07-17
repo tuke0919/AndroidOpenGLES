@@ -119,7 +119,6 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
             // 再次 经过滤镜filter渲染到屏幕上
             filter.onDrawFrame(id, gLCubeBuffer, gLTextureBuffer);
         }
-
     }
 
     @Override
@@ -270,10 +269,12 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
         gLCubeBuffer.put(TextureRotationUtil.CUBE).position(0);
-        if(isRotated)
+        if(isRotated) {
             gLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, false)).position(0);
-        else
+        }
+        else {
             gLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, true)).position(0);
+        }
 
         if(filter == null){
             // 没有滤镜Filter, 就只渲染美颜Filter

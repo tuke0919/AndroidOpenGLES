@@ -46,7 +46,8 @@ public class TextureRotationUtil {
             1.0f, 0.0f,
             1.0f, 1.0f,
     };
-    
+
+    // 顶点坐标
     public static final float CUBE[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,

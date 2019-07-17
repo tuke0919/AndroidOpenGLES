@@ -1,0 +1,93 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+     >
+
+    <!--主窗口-->
+    <com.yinge.opengl.camera.camera.CameraGlSurfaceView
+        android:id="@+id/camera_gl_surfaceview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="120dp"
+        />
+
+    <!--摄像机 ，切换摄像头-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent">
+
+        <!--摄像头-->
+        <ImageView
+            android:id="@+id/btn_camera_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_video"/>
+
+        <!--切换摄像头-->
+        <ImageView
+            android:id="@+id/btn_camera_switch"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/selector_switch_camera"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_height="120.0dip"
+        android:paddingTop="5dip"
+        android:paddingBottom="5dip"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white">
+
+        <!-- 美颜 -->
+        <ImageView
+            android:id="@+id/btn_camera_beauty"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:src="@drawable/btn_camera_beauty"
+            android:scaleType="center">
+        </ImageView>
+
+        <!-- 拍照，快门 -->
+        <ImageView
+            android:id="@+id/btn_camera_shutter"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:src="@drawable/btn_camera_shutter">
+        </ImageView>
+
+        <!-- 滤镜 -->
+        <ImageView
+            android:id="@+id/btn_camera_filter"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:scaleType="center"
+            android:src="@drawable/btn_camera_filter">
+        </ImageView>
+
+    </LinearLayout>
+
+    <!-- 相机滤镜 布局-->
+    <include
+        android:id="@+id/camera_filter_layout"
+        layout="@layout/camera_filter_layout"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

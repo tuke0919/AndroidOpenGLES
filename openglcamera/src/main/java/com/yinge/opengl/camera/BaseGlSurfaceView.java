@@ -100,7 +100,7 @@ public abstract class BaseGlSurfaceView extends GLSurfaceView implements GLSurfa
     }
 
     /**
-     *
+     * 窗口大小改变，传递到 着色器
      */
     protected void onFilterChanged(){
         if(filter != null) {
@@ -152,8 +152,12 @@ public abstract class BaseGlSurfaceView extends GLSurfaceView implements GLSurfa
         float[] textureCords = TextureRotationUtil.getRotation(Rotation.fromInt(rotation), flipHorizontal, flipVertical);
 
         float[] cube = TextureRotationUtil.CUBE;
+        // 宽比
         float ratio1 = (float)surfaceWidth / imageWidth;
+        // 高比
         float ratio2 = (float)surfaceHeight / imageHeight;
+
+
         float ratioMax = Math.max(ratio1, ratio2);
         int imageWidthNew = Math.round(imageWidth * ratioMax);
         int imageHeightNew = Math.round(imageHeight * ratioMax);
