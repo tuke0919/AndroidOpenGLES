@@ -109,16 +109,23 @@ public abstract class BaseGlSurfaceView extends GLSurfaceView implements GLSurfa
         }
     }
 
+    /**
+     * 设置滤镜Filter
+     * @param type
+     */
     public void setFilter(final FilterType type){
         queueEvent(new Runnable() {
             @Override
             public void run() {
-                if (filter != null)
+                if (filter != null) {
                     filter.destroy();
+                }
                 filter = null;
                 filter = FilterFactory.initFilters(type);
-                if (filter != null)
+                if (filter != null) {
                     filter.init();
+                }
+                // 滤镜改变
                 onFilterChanged();
             }
         });

@@ -94,9 +94,10 @@ public class OpenGlUtils {
         GLES20.glLinkProgram(program);
 
         int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(program, GLES20.GL_COMPILE_STATUS, linkStatus, 0);
+        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] == 0) {
             Log.e(TAG,"Could not compile program:" + program);
+            Log.e(TAG,"GLES20 Error:"+ GLES20.glGetProgramInfoLog(program));
             GLES20.glDeleteProgram(program);
             program = 0;
         }

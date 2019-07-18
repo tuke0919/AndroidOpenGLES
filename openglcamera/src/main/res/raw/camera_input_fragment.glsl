@@ -1,4 +1,3 @@
-// 相机图像纹理 必加
 #extension GL_OES_EGL_image_external : require
 
 precision mediump float;

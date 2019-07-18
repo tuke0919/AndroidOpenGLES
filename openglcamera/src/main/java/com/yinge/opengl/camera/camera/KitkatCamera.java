@@ -3,6 +3,7 @@ package com.yinge.opengl.camera.camera;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -91,6 +92,9 @@ public class KitkatCamera implements ICamera {
             // 获取合适的尺寸
             mPreviewSize = getPropertySize(parameters.getSupportedPreviewSizes(), mSizeConfig.rate, mSizeConfig.minPreviewWidth);
             mPictureSize = getPropertySize(parameters.getSupportedPictureSizes(), mSizeConfig.rate, mSizeConfig.minPictureWidth);;
+
+            Log.e("yinge", "mPreviewSize = " + mPreviewSize.width + "*" + mPreviewSize.height
+                    + "mPictureSize = " + mPictureSize.width + "*" + mPictureSize.height);
 
             // 设置参数
             parameters.setPictureSize(mPictureSize.width, mPictureSize.height);
