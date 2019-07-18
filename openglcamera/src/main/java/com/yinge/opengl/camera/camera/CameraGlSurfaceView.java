@@ -311,7 +311,20 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
         return result;
     }
 
+    /**
+     * 通知美颜等级改变
+     */
     public void onBeautyLevelChanged() {
         mCameraInputFilter.onBeautyLevelChanged();
     }
+
+    /**
+     * 切换摄像头
+     */
+    public void switchCamera() {
+        mCameraManger.switchCamera();
+        mCameraManger.setPreviewTexture(mSurfaceTexture);
+        mCameraManger.startPreview();
+    }
+
 }

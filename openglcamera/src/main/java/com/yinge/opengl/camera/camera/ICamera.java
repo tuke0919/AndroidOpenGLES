@@ -72,10 +72,9 @@ public interface ICamera {
 
     /**
      * 切换摄像头
-     * @param camereId
      * @return
      */
-    boolean switchCamera(int camereId);
+    boolean switchCamera();
 
     /**
      * 拍照回调

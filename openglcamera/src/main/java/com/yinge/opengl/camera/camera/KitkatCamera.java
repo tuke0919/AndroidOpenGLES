@@ -110,8 +110,6 @@ public class KitkatCamera implements ICamera {
 
             return true;
         }
-
-
         return false;
     }
 
@@ -180,9 +178,9 @@ public class KitkatCamera implements ICamera {
     }
 
     @Override
-    public boolean switchCamera(int cameraId) {
-        stopPreview();
-        open(cameraId);
+    public boolean switchCamera() {
+        releasePreview();
+        open(mCameraId == 1 ? 0 : 1);
         return false;
     }
 
@@ -192,7 +190,7 @@ public class KitkatCamera implements ICamera {
         mCamera.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
-                if (callback == null) {
+                if (callback != null) {
                     callback.onTakePhoto(data, mPictureSize.width, mPictureSize.height);
                 }
             }

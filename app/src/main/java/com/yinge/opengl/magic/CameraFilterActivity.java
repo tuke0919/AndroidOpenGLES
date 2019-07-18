@@ -289,6 +289,7 @@ public class CameraFilterActivity extends AppCompatActivity implements View.OnCl
      * 切换摄像头
      */
     public void switchCamera() {
+        mCameraGlSurfaceView.switchCamera();
 
     }
 
@@ -302,6 +303,7 @@ public class CameraFilterActivity extends AppCompatActivity implements View.OnCl
                             public void onClick(DialogInterface dialog, int which) {
                                 // 设置等级
                                 OpenGlCameraSdk.getInstance().setBeautyLevel(which);
+                                mCameraGlSurfaceView.onBeautyLevelChanged();
                                 dialog.dismiss();
                             }
                         })
