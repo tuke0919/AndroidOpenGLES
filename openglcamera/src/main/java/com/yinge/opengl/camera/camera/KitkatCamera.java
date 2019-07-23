@@ -90,11 +90,14 @@ public class KitkatCamera implements ICamera {
             parameters.setRotation(90);
 
             // 获取合适的尺寸
-            mPreviewSize = getPropertySize(parameters.getSupportedPreviewSizes(), mSizeConfig.rate, mSizeConfig.minPreviewWidth);
-            mPictureSize = getPropertySize(parameters.getSupportedPictureSizes(), mSizeConfig.rate, mSizeConfig.minPictureWidth);;
+//            mPreviewSize = getPropertySize(parameters.getSupportedPreviewSizes(), mSizeConfig.rate, mSizeConfig.minPreviewWidth);
+//            mPictureSize = getPropertySize(parameters.getSupportedPictureSizes(), mSizeConfig.rate, mSizeConfig.minPictureWidth);;
 
-            Log.e("yinge", "mPreviewSize = " + mPreviewSize.width + "*" + mPreviewSize.height
-                    + "mPictureSize = " + mPictureSize.width + "*" + mPictureSize.height);
+            mPictureSize = getLargePictureSize(mCamera);
+            mPreviewSize = getLargePreviewSize(mCamera);
+
+            Log.e("camera", "mPreviewSize = " + mPreviewSize.width + "*" + mPreviewSize.height
+                    + " mPictureSize = " + mPictureSize.width + "*" + mPictureSize.height);
 
             // 设置参数
             parameters.setPictureSize(mPictureSize.width, mPictureSize.height);
@@ -233,6 +236,40 @@ public class KitkatCamera implements ICamera {
         return supportSizeList.get(i);
     }
 
+
+    private Camera.Size getPropPreviewSize(List<Camera.Size> list, float th, int minWidth){
+        Collections.sort(list, mSizeComparator);
+
+        int i = 0;
+        for(Camera.Size s:list){
+            if((s.height >= minWidth) && equalRate(s, th)){
+                break;
+            }
+            i++;
+        }
+        if(i == list.size()){
+            i = 0;
+        }
+        return list.get(i);
+    }
+
+    private Camera.Size getPropPictureSize(List<Camera.Size> list, float th, int minWidth){
+        Collections.sort(list, mSizeComparator);
+
+        int i = 0;
+        for(Camera.Size s:list){
+            if((s.height >= minWidth) && equalRate(s, th)){
+                break;
+            }
+            i++;
+        }
+        if(i == list.size()){
+            i = 0;
+        }
+        return list.get(i);
+    }
+
+
     /**
      * 宽高比是否相同
      * @param s
@@ -263,4 +300,57 @@ public class KitkatCamera implements ICamera {
             }
         }
     }
+
+    /**
+     * 找 picture最大宽的size，且scale 在0.5~0.6
+     * @param camera
+     * @return
+     */
+    public static Camera.Size getLargePictureSize(Camera camera){
+        if(camera != null){
+            List<Camera.Size> sizes = camera.getParameters().getSupportedPictureSizes();
+            Camera.Size temp = sizes.get(0);
+            for(int i = 1 ; i < sizes.size() ; i ++){
+
+                float scale = (float)(sizes.get(i).height) / sizes.get(i).width;
+
+                Log.d("camera"," getLargePictureSize: "
+                        + " index = " + i
+                        + " width = " + sizes.get(i).width
+                        + " height = " + sizes.get(i).height
+                        + " scale = " + scale);
+
+                if(temp.width < sizes.get(i).width && scale < 0.6f && scale > 0.5f)
+                    temp = sizes.get(i);
+            }
+            return temp;
+        }
+        return null;
+    }
+
+    /**
+     * 找 预览最大宽的size
+     * @param camera
+     * @return
+     */
+    public static Camera.Size getLargePreviewSize(Camera camera){
+        if(camera != null){
+            List<Camera.Size> sizes = camera.getParameters().getSupportedPreviewSizes();
+            Camera.Size temp = sizes.get(0);
+            for(int i = 1; i < sizes.size();i ++){
+
+                Log.d("camera"," getLargePreviewSize: "
+                        + " index = " + i
+                        + " width = " + sizes.get(i).width
+                        + " height = " + sizes.get(i).height);
+
+                if(temp.width < sizes.get(i).width)
+                    temp = sizes.get(i);
+            }
+            return temp;
+        }
+        return null;
+    }
+
+
 }

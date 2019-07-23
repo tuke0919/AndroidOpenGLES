@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.yinge.opengl.camera.CameraActivity;
+import com.yinge.opengl.camerademo.CameraDemoActivity;
 import com.yinge.opengl.egl.EGLRenderActivity;
 import com.yinge.opengl.fbo.FboActivity;
 import com.yinge.opengl.image.GLImageViewActivity;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         add("图形变换", TransformActivity.class);
         add("普通相机", CameraActivity.class);
         add("美颜滤镜相机", CameraFilterActivity.class);
+        add("相机DEMO", CameraDemoActivity.class);
 //        add("相机3 美颜",Camera3Activity.class);
 //        add("压缩纹理动画",ZipActivity.class);
         add("FBO使用", FboActivity.class);

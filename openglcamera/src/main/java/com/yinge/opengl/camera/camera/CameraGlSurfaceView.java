@@ -271,8 +271,7 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
         gLCubeBuffer.put(TextureRotationUtil.CUBE).position(0);
         if(isRotated) {
             gLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, false)).position(0);
-        }
-        else {
+        } else {
             gLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, true)).position(0);
         }
 
