@@ -9,6 +9,7 @@ import android.opengl.GLES20;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 
@@ -55,6 +56,8 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
 
     // 相机
     private ICamera mCameraManger;
+
+    private boolean mIsRecording;
 
     public CameraGlSurfaceView(Context context) {
         this(context, null);
@@ -369,6 +372,64 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
         File mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
 
         return mediaFile;
+    }
+
+    /**
+     * 开始录视频
+     */
+    public void startRecord() {
+        mIsRecording = true;
+    }
+
+    /**
+     * 结束录视频
+     */
+    public void stopRecord() {
+        mIsRecording = false;
+    }
+
+    /**
+     * 聚焦，缩放功能
+     */
+    private float mOldDistance;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getPointerCount() == 1) {
+            // 点击聚焦
+            mCameraManger.focusOnPoint((int) event.getX(), (int) event.getY(), getWidth(), getHeight());
+            return true;
+        }
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_POINTER_DOWN:
+                mOldDistance = getFingerSpacing(event);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float newDistance = getFingerSpacing(event);
+                if (newDistance > mOldDistance) {
+                    // 放大
+                    mCameraManger.handleZoom(true);
+                } else if (newDistance < mOldDistance) {
+                    // 缩小
+                    mCameraManger.handleZoom(false);
+                }
+                mOldDistance = newDistance;
+                break;
+            default:
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    /**
+     * 两个手指的距离
+     * @param event
+     * @return
+     */
+    private static float getFingerSpacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
     }
 
 }

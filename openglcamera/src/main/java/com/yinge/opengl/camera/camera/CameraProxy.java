@@ -3,6 +3,7 @@ package com.yinge.opengl.camera.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -15,10 +16,11 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class CameraProxy implements ICamera {
+public class CameraProxy implements ICamera, Camera.AutoFocusCallback {
 
     public static final String TAG = "CameraProxy";
 
@@ -31,7 +33,7 @@ public class CameraProxy implements ICamera {
     private Size mPreviewSize;
     private Size mPictureSize;
 
-    private int mPreviewDefaultWidth = 1440; // default 1440
+    private int mPreviewDefaultWidth = 1920; // default 1440
     private int mPreviewDefaultHeight = 1080; // default 1080
     private float mPreviewScale;
 
@@ -198,7 +200,8 @@ public class CameraProxy implements ICamera {
             Log.d(TAG, "previewWidth: " + mPreviewSize.width + ", previewHeight: " + mPreviewSize.height);
 
             // 设置拍照图片大小
-            mPictureSize = getSuitableSize(mParameters.getSupportedPictureSizes(), "picture");
+//            mPictureSize = getSuitableSize(mParameters.getSupportedPictureSizes(), "picture");
+            mPictureSize = mParameters.getSupportedPictureSizes().get(0);
             mParameters.setPictureSize(mPictureSize.width, mPictureSize.height);
             Log.d(TAG, "pictureWidth: " + mPictureSize.width + ", pictureHeight: " + mPictureSize.height);
 
@@ -380,4 +383,89 @@ public class CameraProxy implements ICamera {
         return mPictureRotation;
     }
 
+
+    /**
+     * 聚焦到某点
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    @Override
+    public void focusOnPoint(int x, int y, int width, int height) {
+        Log.v(TAG, "touch point (" + x + ", " + y + ")");
+        if (mCamera == null) {
+            return;
+        }
+        Parameters parameters = mCamera.getParameters();
+        // 1.先要判断是否支持设置聚焦区域
+        if (parameters.getMaxNumFocusAreas() > 0) {
+
+            // 2.以触摸点为中心点，view窄边的1/4为聚焦区域的默认边长
+            int length = Math.min(width, height) >> 3; // 1/8的长度
+            int left = x - length;
+            int top = y - length;
+            int right = x + length;
+            int bottom = y + length;
+
+            // 3.映射，因为相机聚焦的区域是一个(-1000,-1000)到(1000,1000)的坐标区域
+            left = left * 2000 / width - 1000;
+            top = top * 2000 / height - 1000;
+            right = right * 2000 / width - 1000;
+            bottom = bottom * 2000 / height - 1000;
+
+            // 4.判断上述矩形区域是否超过边界，若超过则设置为临界值
+            left = left < -1000 ? -1000 : left;
+            top = top < -1000 ? -1000 : top;
+            right = right > 1000 ? 1000 : right;
+            bottom = bottom > 1000 ? 1000 : bottom;
+
+            Log.d(TAG, "focus area (" + left + ", " + top + ", " + right + ", " + bottom + ")");
+            ArrayList<Camera.Area> areas = new ArrayList<>();
+            areas.add(new Camera.Area(new Rect(left, top, right, bottom), 600));
+
+            // 5.设置聚焦区域
+            parameters.setFocusAreas(areas);
+        }
+        try {
+            // 先要取消掉进程中所有的聚焦功能
+            mCamera.cancelAutoFocus();
+            mCamera.setParameters(parameters);
+            // 调用聚焦
+            mCamera.autoFocus(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 缩放
+     * @param isZoomIn
+     */
+    @Override
+    public void handleZoom(boolean isZoomIn) {
+
+        if (mParameters != null && mParameters.isZoomSupported()) {
+            // 最大缩放
+            int maxZoom = mParameters.getMaxZoom();
+            // 当前的缩放
+            int zoom = mParameters.getZoom();
+            if (isZoomIn && zoom < maxZoom) {
+                zoom++;
+            } else if (zoom > 0) {
+                zoom--;
+            }
+            Log.d(TAG, "handleZoom: zoom: " + zoom);
+            mParameters.setZoom(zoom);
+            mCamera.setParameters(mParameters);
+        } else {
+            Log.i(TAG, "zoom not supported");
+        }
+    }
+
+
+    @Override
+    public void onAutoFocus(boolean success, Camera camera) {
+        Log.d(TAG, "onAutoFocus: " + success);
+    }
 }

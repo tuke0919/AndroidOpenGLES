@@ -49,7 +49,6 @@ public class CameraFilterActivity extends AppCompatActivity implements View.OnCl
 
     // 适配器
     private CameraFilterAdapter mAdapter;
-    private boolean isRecording = false;
 
     // 美颜，快门，滤镜
     private ImageView mBtnShutter;
@@ -65,6 +64,9 @@ public class CameraFilterActivity extends AppCompatActivity implements View.OnCl
 
     // 动画
     private ObjectAnimator mShutterAnimator;
+
+    // 是否在录视频
+    private boolean isRecording = false;
 
     // 滤镜数组
     private final FilterType[] mFilterTypes = new FilterType[]{
@@ -243,14 +245,14 @@ public class CameraFilterActivity extends AppCompatActivity implements View.OnCl
      * 录像
      */
     private void takeVideo(){
-//        if(isRecording) {
-//            mShutterAnimator.end();
-//            magicEngine.stopRecord();
-//        }else {
-//            mShutterAnimator.start();
-//            magicEngine.startRecord();
-//        }
-//        isRecording = !isRecording;
+        if(isRecording) {
+            mShutterAnimator.end();
+            mCameraGlSurfaceView.stopRecord();
+        }else {
+            mShutterAnimator.start();
+            mCameraGlSurfaceView.startRecord();
+        }
+        isRecording = !isRecording;
     }
 
     /**

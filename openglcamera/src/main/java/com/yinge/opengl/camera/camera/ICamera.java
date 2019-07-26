@@ -97,7 +97,21 @@ public interface ICamera {
      */
     int getPictureRotation();
 
+    /**
+     * 聚焦到某点
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    void focusOnPoint(int x, int y, int width, int height);
 
+
+    /**
+     * 缩放
+     * @param isZoomIn
+     */
+    void handleZoom(boolean isZoomIn);
 
 
 
