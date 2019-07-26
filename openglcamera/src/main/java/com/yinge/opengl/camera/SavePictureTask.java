@@ -16,10 +16,17 @@ public class SavePictureTask extends AsyncTask<Bitmap, Integer, String>{
 	
 	private OnPictureSaveListener onPictureSaveListener;
 	private File file;
+	private boolean mRecycled = true;
 
-	public SavePictureTask(File file, OnPictureSaveListener listener){
+    public SavePictureTask(File file, OnPictureSaveListener listener) {
+        this.file = file;
+        this.onPictureSaveListener = listener;
+    }
+
+    public SavePictureTask(File file, OnPictureSaveListener listener, boolean recycle){
 		this.onPictureSaveListener = listener;
 		this.file = file;
+		this.mRecycled = recycle;
 	}
 	
 	@Override
@@ -57,7 +64,9 @@ public class SavePictureTask extends AsyncTask<Bitmap, Integer, String>{
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
 			out.flush();
 			out.close();
-			bitmap.recycle();
+			if (mRecycled) {
+                bitmap.recycle();
+            }
 			return file.toString();
 		} catch (FileNotFoundException e) {
 		   e.printStackTrace();

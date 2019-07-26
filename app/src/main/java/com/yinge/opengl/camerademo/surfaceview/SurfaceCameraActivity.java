@@ -19,14 +19,13 @@ import com.yinge.opengl.camerademo.camera.CameraProxy;
 
 public class SurfaceCameraActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "SurfaceCameraActivity";
 
     private ImageView mCloseIv;
     private ImageView mSwitchCameraIv;
     private ImageView mTakePictureIv;
     private ImageView mPictureIv;
-    private CameraSurfaceView mCameraView;
 
+    private CameraSurfaceView mCameraView;
     private CameraProxy mCameraProxy;
 
     @Override
@@ -54,16 +53,20 @@ public class SurfaceCameraActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_close_iv:
+                // 关闭
                 finish();
                 break;
             case R.id.toolbar_switch_iv:
+                // 切换摄像头
                 mCameraProxy.switchCamera();
                 mCameraProxy.startPreview(mCameraView.getHolder());
                 break;
             case R.id.take_picture_iv:
+                // 拍照
                 mCameraProxy.takePicture(mPictureCallback);
                 break;
             case R.id.picture_iv:
+                // 相册
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivity(intent);
                 break;
@@ -73,8 +76,10 @@ public class SurfaceCameraActivity extends AppCompatActivity implements View.OnC
     private final Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            mCameraProxy.startPreview(mCameraView.getHolder()); // 拍照结束后继续预览
-            new ImageSaveTask().execute(data); // 保存图片
+            // 拍照结束后继续预览
+            mCameraProxy.startPreview(mCameraView.getHolder());
+            // 保存图片
+            new ImageSaveTask().execute(data);
         }
     };
 
@@ -84,15 +89,22 @@ public class SurfaceCameraActivity extends AppCompatActivity implements View.OnC
         protected Bitmap doInBackground(byte[]... bytes) {
             long time = System.currentTimeMillis();
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes[0], 0, bytes[0].length);
-            Log.d(TAG, "BitmapFactory.decodeByteArray time: " + (System.currentTimeMillis() - time));
+
+            Log.d(CameraProxy.TAG, "BitmapFactory.decodeByteArray time: " + (System.currentTimeMillis() - time));
+
             int rotation = mCameraProxy.getLatestRotation();
+//            int rotation = 0;
             time = System.currentTimeMillis();
-            Bitmap rotateBitmap = ImageUtils.rotateBitmap(bitmap, rotation, mCameraProxy.isFrontCamera(), true);
-            Log.d(TAG, "rotateBitmap time: " + (System.currentTimeMillis() - time));
+            Bitmap rotateBitmap = ImageUtils.rotateBitmap(bitmap, rotation, mCameraProxy.isFrontCamera(), false);
+            Log.d(CameraProxy.TAG, "rotateBitmap time: " + (System.currentTimeMillis() - time));
+
+
             time = System.currentTimeMillis();
             ImageUtils.saveBitmap(rotateBitmap);
-            Log.d(TAG, "saveBitmap time: " + (System.currentTimeMillis() - time));
+            Log.d(CameraProxy.TAG, "saveBitmap time: " + (System.currentTimeMillis() - time));
+
             rotateBitmap.recycle();
+
             return ImageUtils.getLatestThumbBitmap();
         }
 

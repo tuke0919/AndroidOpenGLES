@@ -4,25 +4,35 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.opengl.GLES20;
+import android.os.Environment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 
 import com.yinge.opengl.camera.BaseGlSurfaceView;
 import com.yinge.opengl.camera.SavePictureTask;
 import com.yinge.opengl.camera.filter.helper.FilterType;
+import com.yinge.opengl.camera.util.ImageUtil;
 import com.yinge.opengl.camera.util.OpenGlUtils;
 import com.yinge.opengl.camera.util.Rotation;
 import com.yinge.opengl.camera.util.TextureRotationUtil;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.yinge.opengl.camera.camera.CameraProxy.TAG;
 
 /**
  * 相机预览 + 美颜 + 滤镜 + 拍照 其实有三个过程：
@@ -44,7 +54,7 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
     private SurfaceTexture mSurfaceTexture;
 
     // 相机
-    private KitkatCamera mCameraManger;
+    private ICamera mCameraManger;
 
     public CameraGlSurfaceView(Context context) {
         this(context, null);
@@ -52,11 +62,18 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
 
     public CameraGlSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        mCameraManger = new KitkatCamera();
+        mCameraManger = getCamera(context);
         this.getHolder().addCallback(this);
-
         mScaleType = ScaleType.CENTER_CROP;
+    }
+
+    /**
+     * 返回相机
+     * @param context
+     * @return
+     */
+    public ICamera getCamera(Context context) {
+        return new CameraProxy(context, false);
     }
 
     @Override
@@ -131,10 +148,11 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
      */
     private void openCamera(){
 
-        if (mCameraManger.getCamera() == null) {
-            mCameraManger.open();
-        }
-        int orientation = mCameraManger.getOrientation();
+        mCameraManger.openCamera();
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        Camera.getCameraInfo(mCameraManger.getCameraId(), cameraInfo);
+        int orientation = cameraInfo.orientation;
+
         if( orientation == 90 || orientation == 270){
             imageWidth = mCameraManger.getPreviewSize().height;
             imageHeight = mCameraManger.getPreviewSize().width;
@@ -144,13 +162,13 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
         }
 
         mCameraInputFilter.onInputSizeChanged(imageWidth, imageHeight);
+
         // 调整方向
         adjustSize(orientation, mCameraManger.getCameraId() == 1 , true);
 
         // 设置图像流 开始预览
         if(mSurfaceTexture != null) {
-            mCameraManger.setPreviewTexture(mSurfaceTexture);
-            mCameraManger.startPreview();
+            mCameraManger.startPreview(mSurfaceTexture);
         }
 
     }
@@ -160,7 +178,7 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
         super.surfaceDestroyed(holder);
         // 释放相机资源
         if (mCameraManger != null) {
-            mCameraManger.releasePreview();
+            mCameraManger.releaseCamera();
         }
     }
 
@@ -182,20 +200,32 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
 
     @Override
     public void savePicture(final SavePictureTask savePictureTask) {
-        mCameraManger.takePhoto(new ICamera.TakePhotoCallback() {
+        mCameraManger.takePicture(new Camera.PictureCallback() {
             @Override
-            public void onTakePhoto(byte[] bytes, int width, int height) {
+            public void onPictureTaken(byte[] data, Camera camera) {
                 // 先停止，还有Surface等资源
                 mCameraManger.stopPreview();
                 // 创建位图，此位图是相机底层，原始的为经过滤镜，美颜的图像
-                final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (bitmap != null) {
+//                            new SavePictureTask(getOutputMediaFile(), null, true).execute(bitmap);
+//                        }
+//                    }
+//                }).start();
+                // 旋转相机传感器图像
+                final Bitmap rotateBitmap = ImageUtil.rotateBitmap(bitmap, mCameraManger.getPictureRotation(), mCameraManger.isFrontCamera(), false);
 
                 // 加到渲染线程里，其实 自定义一个线程也可以
                 queueEvent(new Runnable() {
                     @Override
                     public void run() {
                         // 重新用之前的filter，进行渲染
-                        final Bitmap photo = drawPhoto(bitmap, mCameraManger.isFrontCamera());
+                        final Bitmap photo = drawPhoto(rotateBitmap, mCameraManger.isFrontCamera());
                         GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight);
                         if (photo != null) {
                             savePictureTask.execute(photo);
@@ -203,10 +233,9 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
                     }
                 });
                 // 在打开
-                mCameraManger.startPreview();
+                mCameraManger.startPreview(mSurfaceTexture);
             }
         });
-
     }
 
     /**
@@ -270,7 +299,7 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
                 .asFloatBuffer();
         gLCubeBuffer.put(TextureRotationUtil.CUBE).position(0);
         if(isRotated) {
-            gLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, false)).position(0);
+            gLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, true)).position(0);
         } else {
             gLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, true)).position(0);
         }
@@ -278,7 +307,7 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
         if(filter == null){
             // 没有滤镜Filter, 就只渲染美颜Filter
             mBeautyFilter.onDrawFrame(textureId, gLCubeBuffer, gLTextureBuffer);
-        }else{
+        } else {
             // 有滤镜Filter。滤镜 + 美颜都会渲染
 
             // 先渲染有图像数据的纹理id，到之前附着FBO的纹理id的内存 mFrameBufferTextureIds[0]
@@ -322,8 +351,24 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
      */
     public void switchCamera() {
         mCameraManger.switchCamera();
-        mCameraManger.setPreviewTexture(mSurfaceTexture);
-        mCameraManger.startPreview();
+        mCameraManger.startPreview(mSurfaceTexture);
+    }
+
+    /**
+     * @return 输出文件路径
+     */
+    public File getOutputMediaFile() {
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MagicCamera");
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINESE).format(new Date());
+        String timeStamp = System.currentTimeMillis() + "";
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+
+        return mediaFile;
     }
 
 }

@@ -355,7 +355,8 @@ public class CameraFilterActivity extends AppCompatActivity implements View.OnCl
                 return null;
             }
         }
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINESE).format(new Date());
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINESE).format(new Date());
+        String timeStamp = System.currentTimeMillis() + "";
         File mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
 
         return mediaFile;

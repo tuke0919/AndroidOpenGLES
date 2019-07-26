@@ -1,54 +1,43 @@
 package com.yinge.opengl.camera.camera;
 
-import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.view.SurfaceHolder;
 
 /**
  * 功能：
  * </p>
  * <p>Copyright corp.netease.com 2018 All right reserved </p>
  *
- * @author tuke 时间 2019/7/13
+ * @author tuke 时间 2019/7/25
  */
 public interface ICamera {
 
     /**
      * @return
      */
-    boolean open();
-
+    int getCameraId();
 
     /**
      * 打开相机
-     * @param cameraId
-     * @return
      */
-    boolean open(int cameraId);
+    void openCamera();
 
     /**
-     * 设置尺寸配置
-     * @param sizeConfig
+     * 打开相机
      */
-    void setSizeConfig(SizeConfig sizeConfig);
-
+    void openCamera(int cameraId);
 
     /**
-     * 预览帧回调
-     * @param callback
+     * 开始预览
+     * @param holder
      */
-    void setOnPreviewFrameCallback(PreviewFrameCallback callback);
-
-    /**
-     * 设置预览纹理
-     * @param texture
-     */
-    void setPreviewTexture(SurfaceTexture texture);
+    void startPreview(SurfaceHolder holder);
 
     /**
      * 开始预览
      */
-    void startPreview();
+    void startPreview(SurfaceTexture texture);
 
     /**
      * 停止预览
@@ -58,7 +47,13 @@ public interface ICamera {
     /**
      * 停止预览 并释放资源
      */
-    void releasePreview();
+    void releaseCamera();
+
+    /**
+     * 切换摄像头
+     * @return
+     */
+    boolean switchCamera();
 
     /**
      * @return 预览宽高
@@ -71,52 +66,39 @@ public interface ICamera {
     Camera.Size getPictureSize();
 
     /**
-     * 切换摄像头
-     * @return
+     * @return 是否前置摄像头
      */
-    boolean switchCamera();
+    boolean isFrontCamera();
 
     /**
-     * 拍照回调
-     * @param callback
+     * @param previewCallback
      */
-    void takePhoto(TakePhotoCallback callback);
-
+    void setPreviewCallback(Camera.PreviewCallback previewCallback);
 
     /**
-     * 拍照回调
+     * @param pictureCallback
      */
-    interface TakePhotoCallback{
-        /**
-         * @param bytes
-         * @param width
-         * @param height
-         */
-        void onTakePhoto(byte[] bytes, int width, int height);
-    }
+    void takePicture(Camera.PictureCallback pictureCallback);
 
     /**
-     * 预览帧回调
+     * @param shutter
+     * @param raw
+     * @param jpeg
      */
-    interface PreviewFrameCallback{
-        /**
-         * @param bytes
-         * @param width
-         * @param height
-         */
-        void onPreviewFrame(byte[] bytes, int width, int height);
-    }
+    void takePicture(Camera.ShutterCallback shutter, Camera.PictureCallback raw, Camera.PictureCallback jpeg);
 
     /**
-     *
+     * @return 相机
      */
-    public class SizeConfig{
-        // 宽高比
-        float rate;
-        // 最小预览宽
-        int minPreviewWidth;
-        // 最小预览高
-        int minPictureWidth;
-    }
+    Camera getCamera();
+
+    /**
+     * @return 拍照旋转角度
+     */
+    int getPictureRotation();
+
+
+
+
 
 }

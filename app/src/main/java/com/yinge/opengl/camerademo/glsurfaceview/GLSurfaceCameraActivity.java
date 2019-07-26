@@ -54,9 +54,11 @@ public class GLSurfaceCameraActivity extends AppCompatActivity implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_close_iv:
+                // 关闭
                 finish();
                 break;
             case R.id.toolbar_switch_iv:
+                // 切换摄像头
                 mCameraProxy.switchCamera();
                 mCameraProxy.startPreview(mCameraView.getSurfaceTexture());
                 break;

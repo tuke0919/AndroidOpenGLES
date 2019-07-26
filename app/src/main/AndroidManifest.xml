@@ -53,6 +53,7 @@
         <activity android:name=".egl.EGLRenderActivity"
             android:screenOrientation="portrait"
             />
+
         <activity android:name=".magic.CameraFilterActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
@@ -68,7 +69,7 @@
 
         <activity
             android:name=".camerademo.surfaceview.SurfaceCameraActivity"
-            android:screenOrientation="portrait"
+
             android:theme="@style/CameraDemoTheme"
             />
         <!---->

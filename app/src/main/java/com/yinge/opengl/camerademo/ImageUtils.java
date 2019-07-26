@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.yinge.opengl.OpenGlApplication;
+import com.yinge.opengl.camerademo.camera.CameraProxy;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +21,7 @@ import java.util.Date;
 
 public class ImageUtils {
 
-    private static final String TAG = "ImageUtils";
+    private static final String TAG = CameraProxy.TAG;
     private static Context sContext = OpenGlApplication.getInstance();
 
     private static final String GALLERY_PATH = Environment.getExternalStoragePublicDirectory(Environment
@@ -31,10 +32,17 @@ public class ImageUtils {
     };
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
+    /**
+     * @param source
+     * @param degree
+     * @param flipHorizontal
+     * @param recycle
+     * @return
+     */
     public static Bitmap rotateBitmap(Bitmap source, int degree, boolean flipHorizontal, boolean recycle) {
-        if (degree == 0 && !flipHorizontal) {
-            return source;
-        }
+//        if (degree == 0 && !flipHorizontal) {
+//            return source;
+//        }
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         if (flipHorizontal) {

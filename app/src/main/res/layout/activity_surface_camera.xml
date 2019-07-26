@@ -19,6 +19,7 @@
             android:orientation="horizontal"
             android:padding="10dp">
 
+            <!--关闭-->
             <ImageView
                 android:id="@+id/toolbar_close_iv"
                 android:layout_width="45dp"
@@ -32,6 +33,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
 
+            <!--切换摄像头-->
             <ImageView
                 android:id="@+id/toolbar_switch_iv"
                 android:layout_width="45dp"
@@ -42,6 +44,7 @@
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
+    <!--camera view-->
     <com.yinge.opengl.camerademo.surfaceview.CameraSurfaceView
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
@@ -49,6 +52,7 @@
         android:layout_below="@+id/toolbar">
     </com.yinge.opengl.camerademo.surfaceview.CameraSurfaceView>
 
+    <!--拍照-->
     <ImageView
         android:id="@+id/take_picture_iv"
         android:layout_width="60dp"
@@ -58,6 +62,7 @@
         android:layout_marginBottom="20dp"
         android:src="@drawable/click_button_selector"/>
 
+    <!--相册-->
     <ImageView
         android:id="@+id/picture_iv"
         android:layout_width="60dp"
