@@ -146,6 +146,10 @@ public abstract class BaseGlSurfaceView extends GLSurfaceView implements GLSurfa
         }
     }
 
+    /**
+     * 保存图片
+     * @param savePictureTask
+     */
     public abstract void savePicture(SavePictureTask savePictureTask);
 
     /**
@@ -163,7 +167,6 @@ public abstract class BaseGlSurfaceView extends GLSurfaceView implements GLSurfa
         float ratio1 = (float)surfaceWidth / imageWidth;
         // 高比
         float ratio2 = (float)surfaceHeight / imageHeight;
-
 
         float ratioMax = Math.max(ratio1, ratio2);
         int imageWidthNew = Math.round(imageWidth * ratioMax);

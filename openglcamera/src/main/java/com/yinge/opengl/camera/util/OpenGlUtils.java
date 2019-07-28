@@ -218,9 +218,10 @@ public class OpenGlUtils {
     /**
      * 创建 位图纹理id
      * @param mBitmap
+     * @param recycle
      * @return
      */
-    public static int createBitmapTexture(Bitmap mBitmap) {
+    public static int createBitmapTexture(Bitmap mBitmap, boolean recycle) {
         int[] texture = new int[1];
         if (mBitmap != null && !mBitmap.isRecycled()) {
             // 生成纹理，得到纹理id
@@ -240,7 +241,12 @@ public class OpenGlUtils {
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
             // 根据以上指定的参数，生成一个2D纹理
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mBitmap, 0);
+
+            if (recycle) {
+                mBitmap.recycle();
+            }
         }
+
         return texture[0];
     }
 

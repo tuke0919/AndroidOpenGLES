@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_filter_tab"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/transparent">
+
+    <!--滤镜列表-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/camera_filter_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="94.0dip"
+        android:padding="5.0dip"
+        android:scrollbars="none"
+        android:background="@android:color/white"/>
+
+    <View 
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#eeeeee"/>
+
+    <!--关闭按钮-->
+    <ImageView
+        android:id="@+id/btn_camera_close_filter"
+        android:background="@android:color/white"
+        android:layout_width="match_parent" 
+        android:layout_height="26dip"
+        android:scaleType="center"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/bg_down_arrow_close" />
+</LinearLayout>

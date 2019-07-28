@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/filter_root"
+    android:layout_gravity="center_vertical" 
+    android:orientation="vertical" 
+    android:layout_width="74.0dip" 
+    android:layout_height="84.0dip"
+    android:padding="5dip"
+  >
+    <FrameLayout 
+        android:layout_width="match_parent"
+        android:layout_height="64.0dip">
+
+        <!--示例图像-->
+        <ImageView 
+            android:id="@+id/filter_image"
+            android:layout_width="64.0dip" 
+            android:layout_height="64.0dip" 
+            android:src="@drawable/filter_thumb_original" 
+            android:scaleType="centerCrop" />
+
+        <!--选择背景-->
+        <FrameLayout 
+            android:id="@+id/filter_selected"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View 
+                android:id="@+id/filter_selected_bg"
+                android:layout_width="match_parent"
+            	android:layout_height="match_parent"/>
+
+            <ImageView
+                android:id="@+id/filter_selected_icon"
+                android:layout_gravity="center"
+                android:layout_width="34.0dip" 
+                android:layout_height="34.0dip" 
+                android:src="@drawable/selector_filter_selected" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <!-- 名称 -->
+    <TextView
+        android:id="@+id/filter_name"
+        android:textColor="@android:color/white" 
+        android:gravity="center" 
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="20.0dip"
+        android:textSize="10sp"
+        android:text="@string/filter_none" />
+</FrameLayout>

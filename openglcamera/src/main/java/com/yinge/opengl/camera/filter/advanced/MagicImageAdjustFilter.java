@@ -12,6 +12,9 @@ import com.yinge.opengl.camera.filter.base.gpuimage.GPUImageSharpenFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 对比度，曝光度，饱和度，锐化，亮度，色调 组合滤镜
+ */
 public class MagicImageAdjustFilter extends MagicBaseGroupFilter{
 	
 	public MagicImageAdjustFilter() {

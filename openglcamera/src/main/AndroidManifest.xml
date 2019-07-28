@@ -1,2 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yinge.opengl.camera" />
+    package="com.yinge.opengl.camera">
+
+    <application>
+        <activity
+            android:name=".image.ImageEditorActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation"
+            >
+        </activity>
+
+        <activity android:name=".camera.CameraFilterActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/CameraDemoTheme">
+
+        </activity>
+    </application>
+
+</manifest>

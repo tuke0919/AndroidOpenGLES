@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <FrameLayout
+        android:id="@+id/image_edit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <RadioGroup
+            android:id="@+id/image_edit_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:background="@android:color/background_dark">
+
+            <!--编辑-->
+            <RadioButton
+                android:id="@+id/image_edit_adjust"
+                android:drawableTop="@drawable/selector_image_adds"
+                android:text="@string/edit_edit"
+                style="@style/ImageEditor_radiobutton"/>
+            <!--@drawable/selector_image_edit-->
+
+            <!--美颜-->
+            <RadioButton
+                android:id="@+id/image_edit_beauty"
+                android:drawableTop="@drawable/selector_image_beauty"
+                android:text="@string/edit_beauty"
+                style="@style/ImageEditor_radiobutton"/>
+
+            <!--装饰-->
+            <RadioButton
+                android:id="@+id/image_edit_adds"
+                android:drawableTop="@drawable/selector_image_adds"
+                android:text="@string/edit_adds"
+                style="@style/ImageEditor_radiobutton"/>
+
+            <!--滤镜-->
+            <RadioButton
+                android:id="@+id/image_edit_filter"
+                android:drawableTop="@drawable/selector_image_filter"
+                android:text="@string/edit_filter"
+                style="@style/ImageEditor_radiobutton"/>
+
+            <!--边框-->
+            <RadioButton
+                android:id="@+id/image_edit_frame"
+                android:drawableTop="@drawable/selector_image_frame"
+                android:text="@string/edit_frame"
+                style="@style/ImageEditor_radiobutton"/>
+
+        </RadioGroup>
+
+        <!-- fragments 容器-->
+        <RelativeLayout
+            android:id="@+id/image_edit_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_dark">
+
+        </RelativeLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/image_edit_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@android:color/black">
+
+        <!--返回-->
+        <ImageView
+            android:id="@+id/image_edit_back"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/mix_gallery_bottom_back_normal"
+            android:layout_centerVertical="true"/>
+
+        <!--保存-->
+        <ImageView
+            android:id="@+id/image_edit_save"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/selector_image_save"/>
+
+        <!--标题-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改图片"
+            android:textColor="@android:color/white"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <!--glsurfaceview-->
+    <com.yinge.opengl.camera.image.ImageGlSurfaceView
+        android:id="@+id/glsurfaceview_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/image_edit_topbar"
+        android:layout_above="@id/image_edit_layout"/>
+
+</RelativeLayout>

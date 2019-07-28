@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.yinge.opengl.camera.CameraActivity;
+import com.yinge.opengl.camera.camera.CameraFilterActivity;
 import com.yinge.opengl.camerademo.CameraDemoActivity;
 import com.yinge.opengl.egl.EGLRenderActivity;
 import com.yinge.opengl.fbo.FboActivity;
 import com.yinge.opengl.image.GLImageViewActivity;
-import com.yinge.opengl.magic.CameraFilterActivity;
+//import com.yinge.opengl.magic.CameraFilterActivity;
 import com.yinge.opengl.render.GLShapeViewActivity;
 import com.yinge.opengl.transform.TransformActivity;
 

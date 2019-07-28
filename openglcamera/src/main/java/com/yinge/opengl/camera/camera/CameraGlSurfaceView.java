@@ -291,7 +291,7 @@ public class CameraGlSurfaceView extends BaseGlSurfaceView {
         GLES20.glViewport(0, 0, width, height);
 //        int textureId = OpenGlUtils.loadTexture(bitmap, OpenGlUtils.NO_TEXTURE, true);
         // 创建纹理id，此时有图像数据
-        int textureId = OpenGlUtils.createBitmapTexture(bitmap);
+        int textureId = OpenGlUtils.createBitmapTexture(bitmap, true);
 
         // 准备顶点坐标和纹理坐标数据
         FloatBuffer gLCubeBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.CUBE.length * 4)
