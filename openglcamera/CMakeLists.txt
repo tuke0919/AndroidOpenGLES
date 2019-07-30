@@ -12,6 +12,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(APP_SRC
     src/main/jni/ImageBeauty.cpp
+    src/main/jni/bitmap/BitmapOperation.cpp
     )
 
 add_library( # Sets the name of the library.
