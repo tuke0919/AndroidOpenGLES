@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.yinge.opengl.camera.CameraActivity;
 import com.yinge.opengl.camera.camera.CameraFilterActivity;
+import com.yinge.opengl.camera.image.ImageEditorActivity;
 import com.yinge.opengl.camerademo.CameraDemoActivity;
 import com.yinge.opengl.egl.EGLRenderActivity;
 import com.yinge.opengl.fbo.FboActivity;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         add("普通相机", CameraActivity.class);
         add("美颜滤镜相机", CameraFilterActivity.class);
         add("相机DEMO", CameraDemoActivity.class);
+        add("图片编辑美颜", ImageEditorActivity.class);
 //        add("相机3 美颜",Camera3Activity.class);
 //        add("压缩纹理动画",ZipActivity.class);
         add("FBO使用", FboActivity.class);

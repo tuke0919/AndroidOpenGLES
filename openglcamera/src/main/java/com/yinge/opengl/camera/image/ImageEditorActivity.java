@@ -8,11 +8,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RadioGroup;
 
 import com.yinge.opengl.camera.R;
+import com.yinge.opengl.camera.filter.base.gpuimage.GPUImageFilter;
+import com.yinge.opengl.camera.filter.helper.FilterAdjuster;
+import com.yinge.opengl.camera.filter.helper.FilterFactory;
 import com.yinge.opengl.camera.filter.helper.FilterType;
 import com.yinge.opengl.camera.image.frags.BaseEditFragment;
 import com.yinge.opengl.camera.image.frags.ImageAddsFragment;
@@ -63,18 +67,24 @@ public class ImageEditorActivity extends AppCompatActivity {
         mEditFragments = new Fragment[5];
 
         // 编辑
-        ImageAdjustFragment adjustFragment = new ImageAdjustFragment(this);
+        final ImageAdjustFragment adjustFragment = new ImageAdjustFragment(this);
         adjustFragment.setOnHideListener(mOnHideListener);
-        adjustFragment.setAdjustListener(new ImageAdjustFragment.OnAdjustListener() {
-            @Override
-            public void onAdjustFilter(int progress, FilterType currentFilterType) {
 
-            }
-        });
         adjustFragment.setOnFilterChangeListener(new BaseEditFragment.onFilterChangeListener() {
             @Override
             public void onSetFilter(FilterType filterType) {
-                mImageGlSurfaceView.setFilter(filterType);
+                Log.e("editor", "filterType = " + filterType.name());
+                GPUImageFilter filter = FilterFactory.initFilters(filterType);
+                mImageGlSurfaceView.setFilter(filter);
+                adjustFragment.setFilterAdjuster(new FilterAdjuster(filter));
+            }
+        });
+
+        adjustFragment.setAdjustListener(new ImageAdjustFragment.OnAdjustListener() {
+            @Override
+            public void onAdjustFilter(int progress, FilterType currentFilterType) {
+                adjustFragment.getFilterAdjuster().adjust(progress, currentFilterType);
+                mImageGlSurfaceView.requestRender();
             }
         });
         mEditFragments[0] = adjustFragment;
@@ -110,6 +120,7 @@ public class ImageEditorActivity extends AppCompatActivity {
      * 初始化 按钮
      */
     public void initRadioButtons(){
+        mFragManager = getSupportFragmentManager();
         mRadioGroup = (RadioGroup)findViewById(R.id.image_edit_radiogroup);
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -260,6 +271,7 @@ public class ImageEditorActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        mImageGlSurfaceView.onDestroy();
         super.onDestroy();
     }
 

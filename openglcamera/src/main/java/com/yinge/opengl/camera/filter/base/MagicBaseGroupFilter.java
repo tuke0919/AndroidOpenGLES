@@ -11,6 +11,9 @@ import java.nio.FloatBuffer;
 import java.util.List;
 
 
+/**
+ * 组合滤镜，原理是：使用FBO，渲染到纹理
+ */
 public class MagicBaseGroupFilter extends GPUImageFilter {
 	protected static int[] frameBuffers = null;
     protected static int[] frameBufferTextures = null;

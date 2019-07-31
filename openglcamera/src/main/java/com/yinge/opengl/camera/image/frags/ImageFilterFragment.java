@@ -28,6 +28,8 @@ public class ImageFilterFragment extends BaseEditFragment implements View.OnClic
 
     // 适配器
     private CameraFilterAdapter mAdapter;
+    // 过滤器类型
+    private FilterType mCurrentFilterType = FilterType.NONE;
 
 	public ImageFilterFragment(Context context) {
 		super(context);
@@ -63,6 +65,7 @@ public class ImageFilterFragment extends BaseEditFragment implements View.OnClic
         mAdapter.setOnFilterChangeListener(new CameraFilterAdapter.onFilterChangeListener() {
             @Override
             public void onFilterChanged(FilterType filterType) {
+                mCurrentFilterType = filterType;
                 // 设置滤镜
                 if (mOnFilterChangeListener != null) {
                     mOnFilterChangeListener.onSetFilter(filterType);
@@ -76,13 +79,11 @@ public class ImageFilterFragment extends BaseEditFragment implements View.OnClic
 		if(!hidden){
 
         }
-//			mFilterLayoutUtils.init(getView());
 	}
 
 	@Override
 	protected boolean isChanged() {
-//		return mFilterLayoutUtils.getFilterType() != MagicFilterType.NONE;
-        return false;
+        return mCurrentFilterType != FilterType.NONE;
 	}
 
     @Override

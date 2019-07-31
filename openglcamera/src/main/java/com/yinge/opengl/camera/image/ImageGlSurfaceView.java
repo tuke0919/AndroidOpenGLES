@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import com.yinge.opengl.camera.BaseGlSurfaceView;
 import com.yinge.opengl.camera.SavePictureTask;
 import com.yinge.opengl.camera.filter.base.gpuimage.GPUImageFilter;
+import com.yinge.opengl.camera.filter.helper.FilterType;
 import com.yinge.opengl.camera.util.OpenGlUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -28,6 +29,7 @@ public class ImageGlSurfaceView extends BaseGlSurfaceView {
     // 图像输入过滤器(就是做没有任何处理的)
     private final GPUImageFilter mImageInputFilter;
 
+    private Bitmap mOriginBitmap;
 
     public ImageGlSurfaceView(Context context) {
         super(context);
@@ -81,7 +83,28 @@ public class ImageGlSurfaceView extends BaseGlSurfaceView {
     }
 
     public void setBitmap(Bitmap bitmap){
+        mOriginBitmap = bitmap;
+    }
 
+    /**
+     * 保存图像滤镜修改
+     */
+    public void saveImageFilterModify() {
+        if (filter != null) {
+            drawToTexture(mOriginBitmap, false);
+            deleteTextures();
+            setFilter(FilterType.NONE);
+        }
+    }
+
+    /**
+     * 保存修改后的图像
+     * @param bitmapAfterFiltered
+     */
+    @Override
+    protected void getBitmapAfterFiltered(Bitmap bitmapAfterFiltered) {
+        mOriginBitmap = bitmapAfterFiltered;
+        requestRender();
     }
 
     public void freeBitmap(){
@@ -89,13 +112,19 @@ public class ImageGlSurfaceView extends BaseGlSurfaceView {
     }
 
     public Bitmap getBitmap(){
-
-        return null;
+        return mOriginBitmap;
     }
 
 
     @Override
     public void savePicture(SavePictureTask savePictureTask) {
 
+    }
+
+    public void onDestroy(){
+        if (mOriginBitmap != null) {
+            mOriginBitmap.recycle();
+            mOriginBitmap = null;
+        }
     }
 }

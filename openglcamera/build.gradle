@@ -17,7 +17,7 @@ android {
             cmake {
                 cppFlags ""
                 //生成多个版本的so文件
-                abiFilters 'arm64-v8a','x86','x86_64'
+                abiFilters 'arm64-v8a','armeabi-v7a','x86','x86_64'
 
             }
         }

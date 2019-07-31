@@ -7,6 +7,7 @@
             android:name=".image.ImageEditorActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             >
         </activity>
 

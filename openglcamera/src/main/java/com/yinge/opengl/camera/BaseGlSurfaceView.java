@@ -1,6 +1,7 @@
 package com.yinge.opengl.camera;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
@@ -15,6 +16,7 @@ import com.yinge.opengl.camera.util.TextureRotationUtil;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -132,6 +134,28 @@ public abstract class BaseGlSurfaceView extends GLSurfaceView implements GLSurfa
         requestRender();
     }
 
+    /**
+     * 设置滤镜Filter
+     * @param newFilter
+     */
+    public void setFilter(final GPUImageFilter newFilter){
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                if (filter != null) {
+                    filter.destroy();
+                }
+                filter = newFilter;
+                if (filter != null) {
+                    filter.init();
+                }
+                // 滤镜改变
+                onFilterChanged();
+            }
+        });
+        requestRender();
+    }
+
     protected void deleteTextures() {
         if(mTextureId != OpenGlUtils.NO_TEXTURE){
             queueEvent(new Runnable() {
@@ -144,6 +168,79 @@ public abstract class BaseGlSurfaceView extends GLSurfaceView implements GLSurfa
                 }
             });
         }
+    }
+
+    /**
+     * 将当前纹理id，使用filter渲染到纹理，然后读像素，生成新的bitmap
+     * 相当于保存滤镜之后的结果
+     * @param bitmap
+     * @param newTexture
+     */
+    protected void drawToTexture(final Bitmap bitmap, final boolean newTexture){
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
+
+                int[] frameBufferObjects = new int[1];
+                int[] frameBufferTextures = new int[1];
+
+                GLES20.glGenFramebuffers(1, frameBufferObjects, 0);
+                GLES20.glGenTextures(1, frameBufferTextures, 0);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, frameBufferTextures[0]);
+
+                GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+
+                // 绑定Fbo，并附加FBO纹理id
+                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferObjects[0]);
+                GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, frameBufferTextures[0], 0);
+
+                GLES20.glViewport(0, 0, width, height);
+                if (filter != null) {
+                    filter.onInputSizeChanged(imageWidth, imageWidth);
+                    filter.onDisplaySizeChanged(width, height);
+                }
+                int textureId = OpenGlUtils.NO_TEXTURE;
+                if (newTexture){
+                    textureId = OpenGlUtils.createBitmapTexture(bitmap, true);
+                } else {
+                    textureId = mTextureId;
+                }
+                // 开始渲染到fbo
+                filter.onDrawFrame(textureId);
+                // 从fbo读内存
+                IntBuffer intBuffer = IntBuffer.allocate(width * height);
+                GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,intBuffer );
+                Bitmap bitmapAfterFilter = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                bitmapAfterFilter.copyPixelsFromBuffer(IntBuffer.wrap(intBuffer.array()));
+
+                if (newTexture) {
+                    GLES20.glDeleteTextures(1, new int[]{textureId}, 0);
+                }
+
+                GLES20.glDeleteFramebuffers(1, frameBufferObjects, 0);
+                GLES20.glDeleteTextures(1, frameBufferTextures, 0);
+                GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight);
+                filter.destroy();
+                filter.init();
+                filter.onDisplaySizeChanged(imageWidth, imageHeight);
+                // 把渲染后的 bitmap传出去
+                getBitmapAfterFiltered(bitmapAfterFilter);
+            }
+        });
+    }
+
+    /**
+     * 获取 filter渲染后的bitmap，之前调用{@link #drawToTexture(Bitmap, boolean)}
+     * @param bitmapAfterFiltered
+     */
+    protected void getBitmapAfterFiltered(Bitmap bitmapAfterFiltered) {
+
     }
 
     /**

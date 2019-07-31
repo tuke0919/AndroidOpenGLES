@@ -13,6 +13,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.yinge.opengl.camera.R;
+import com.yinge.opengl.camera.filter.helper.FilterAdjuster;
 import com.yinge.opengl.camera.filter.helper.FilterType;
 import com.yinge.opengl.camera.image.widget.TwoLineSeekBar;
 
@@ -44,6 +45,8 @@ public class ImageAdjustFragment extends BaseEditFragment{
 
 	// 调整
     public OnAdjustListener mAdjustListener;
+    // 滤镜调整器
+    public FilterAdjuster mFilterAdjuster;
 	
 	public ImageAdjustFragment(Context context) {
 		super(context);
@@ -157,12 +160,31 @@ public class ImageAdjustFragment extends BaseEditFragment{
                 || hue != 0.0f;
 	}
 
+
+	private TwoLineSeekBar.OnSeekChangeListener mOnSeekChangeListener = new TwoLineSeekBar.OnSeekChangeListener() {
+		
+		@Override
+		public void onSeekStopped(float value, float step) {
+
+		}
+		
+		@Override
+		public void onSeekChanged(float value, float step) {
+			mVal.setText(""+value);
+			mLabel.setPressed(value != 0.0f);
+			// 回调
+			if (mAdjustListener != null) {
+                mAdjustListener.onAdjustFilter(convertToProgress(value), mCurrentFilterType);
+            }
+		}
+	};
+
     /**
      * 转换成进度
      * @param value
      * @return
      */
-	private int convertToProgress(float value){
+    private int convertToProgress(float value){
         int i = mRadioGroup.getCheckedRadioButtonId();
         if (i == R.id.fragment_radio_contrast) {
             contrast = value;
@@ -185,25 +207,7 @@ public class ImageAdjustFragment extends BaseEditFragment{
         } else {
             return 0;
         }
-	}
-	
-	private TwoLineSeekBar.OnSeekChangeListener mOnSeekChangeListener = new TwoLineSeekBar.OnSeekChangeListener() {
-		
-		@Override
-		public void onSeekStopped(float value, float step) {
-
-		}
-		
-		@Override
-		public void onSeekChanged(float value, float step) {
-			mVal.setText(""+value);
-			mLabel.setPressed(value != 0.0f);
-			// 回调
-			if (mAdjustListener != null) {
-                mAdjustListener.onAdjustFilter(convertToProgress(value), mCurrentFilterType);
-            }
-		}
-	};
+    }
 
     /**
      * 设置 监听器
@@ -226,6 +230,11 @@ public class ImageAdjustFragment extends BaseEditFragment{
 	    void onAdjustFilter(int progress, FilterType currentFilterType);
     }
 
+    public FilterAdjuster getFilterAdjuster() {
+        return mFilterAdjuster;
+    }
 
-
+    public void setFilterAdjuster(FilterAdjuster mFilterAdjuster) {
+        this.mFilterAdjuster = mFilterAdjuster;
+    }
 }
