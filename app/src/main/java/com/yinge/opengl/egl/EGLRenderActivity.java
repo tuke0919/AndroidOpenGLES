@@ -98,7 +98,7 @@ public class EGLRenderActivity extends AppCompatActivity {
         String path = mImgPath.substring(0,mImgPath.lastIndexOf("/")+1);
         File folder = new File(path);
         if(!folder.exists() && !folder.mkdirs()){
-            runOnUiThread(new Runnable() {
+            this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(EGLRenderActivity.this, "无法保存照片", Toast.LENGTH_SHORT).show();
