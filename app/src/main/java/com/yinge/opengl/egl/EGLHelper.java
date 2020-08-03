@@ -37,10 +37,10 @@ import static javax.microedition.khronos.egl.EGL10.EGL_SUCCESS;
  * d, 创建Context
  * e, 指定当前的环境为绘制环境
  * </p>
- * <p>Copyright corp.netease.com 2018 All right reserved </p>
+ * <p>Copyright corp.xxx.com 2018 All right reserved </p>
  *
  * @author tuke 时间 2019/7/15
- * @email tuke@corp.netease.com
+ * @email tuke@xxx.com
  * <p>
  * 最后修改人：无
  * <p>

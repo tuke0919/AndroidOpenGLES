@@ -11,10 +11,10 @@ import java.nio.IntBuffer;
 /**
  * 功能：EGL环境 + 着色器 后台渲染图片
  * </p>
- * <p>Copyright corp.netease.com 2018 All right reserved </p>
+ * <p>Copyright corp.xxx.com 2018 All right reserved </p>
  *
  * @author tuke 时间 2019/7/16
- * @email tuke@corp.netease.com
+ * @email tuke@xxx.com
  * <p>
  * 最后修改人：无
  * <p>

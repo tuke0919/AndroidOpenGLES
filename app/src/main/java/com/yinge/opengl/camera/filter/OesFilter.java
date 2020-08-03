@@ -9,10 +9,10 @@ import java.util.Arrays;
 /**
  * 功能：
  * </p>
- * <p>Copyright corp.netease.com 2018 All right reserved </p>
+ * <p>Copyright corp.xxx.com 2018 All right reserved </p>
  *
  * @author tuke 时间 2019/7/14
- * @email tuke@corp.netease.com
+ * @email tuke@xxx.com
  * <p>
  * 最后修改人：无
  * <p>
