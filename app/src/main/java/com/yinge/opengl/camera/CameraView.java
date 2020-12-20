@@ -12,7 +12,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * 功能：
+ * 功能：Camera + SurfaceTexture + GLSurfaceView + OpenGLES
  * </p>
  * <p>Copyright corp.xxx.com 2018 All right reserved </p>
  *

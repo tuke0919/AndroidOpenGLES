@@ -13,6 +13,8 @@ import java.nio.FloatBuffer;
 
 /**
  * 相机输入着色器：实现将Camera硬件传回的图像 渲染到 GLSurfaceView
+ *
+ * 片元着色器带有美颜Filter的逻辑， 所以美颜Filter在这里直接设置的
  */
 public class MagicCameraInputFilter extends GPUImageFilter {
 
